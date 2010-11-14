@@ -1,4 +1,4 @@
-package org.movealong.congrieve.deploy;
+package org.movealong.jumpstart.deploy;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

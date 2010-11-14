@@ -1,4 +1,4 @@
-package org.movealong.congrieve.deploy;
+package org.movealong.jumpstart.deploy;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;

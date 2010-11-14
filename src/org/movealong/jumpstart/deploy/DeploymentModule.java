@@ -1,4 +1,4 @@
-package org.movealong.congrieve.deploy;
+package org.movealong.jumpstart.deploy;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
