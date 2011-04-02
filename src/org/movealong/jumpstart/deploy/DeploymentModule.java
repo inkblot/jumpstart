@@ -16,6 +16,10 @@ public class DeploymentModule extends AbstractModule {
         Multibinder.newSetBinder(binder, DeploymentListener.class).addBinding().toInstance(listener);
     }
 
+    public static void addListener(Binder binder, Class<? extends DeploymentListener> listenerClass) {
+        Multibinder.newSetBinder(binder, DeploymentListener.class).addBinding().to(listenerClass);
+    }
+
     @Override
     protected void configure() {
         bind(DeploymentListener.class).annotatedWith(Dispatcher.class).to(DeploymentDispatcher.class);
