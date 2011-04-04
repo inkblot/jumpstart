@@ -2,8 +2,8 @@ package org.movealong.jumpstart.deploy;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
  */
 @Singleton
 class DeploymentDispatcher extends DeploymentAdapter {
-    private static final Log logger = LogFactory.getLog(DeploymentDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeploymentDispatcher.class);
     private final Stack<DeploymentListener> deployedListeners = new Stack<DeploymentListener>();
     private final Stack<DeploymentListener> undeployedListeners = new Stack<DeploymentListener>();
 
