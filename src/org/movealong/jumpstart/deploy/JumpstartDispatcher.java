@@ -14,14 +14,14 @@ import java.util.*;
  * Time: 1:59:54 AM
  */
 @Singleton
-class DeploymentDispatcher extends DeploymentAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(DeploymentDispatcher.class);
-    private final Stack<DeploymentListener> deployedListeners = new Stack<DeploymentListener>();
-    private final Stack<DeploymentListener> undeployedListeners = new Stack<DeploymentListener>();
+class JumpstartDispatcher extends AbstractDeployable {
+    private static final Logger logger = LoggerFactory.getLogger(JumpstartDispatcher.class);
+    private final Stack<Deployable> deployedListeners = new Stack<Deployable>();
+    private final Stack<Deployable> undeployedListeners = new Stack<Deployable>();
 
     @Inject
-    public DeploymentDispatcher(Set<DeploymentListener> listeners) {
-        for (DeploymentListener listener: listeners) {
+    public JumpstartDispatcher(Set<Deployable> listeners) {
+        for (Deployable listener: listeners) {
             undeployedListeners.insertElementAt(listener, 0);
         }
     }
@@ -30,7 +30,7 @@ class DeploymentDispatcher extends DeploymentAdapter {
     public void doDeploy() {
         try {
             while (!undeployedListeners.isEmpty()) {
-                DeploymentListener listener = undeployedListeners.pop();
+                Deployable listener = undeployedListeners.pop();
                 try {
                     logger.info("Deploying listener: listener=" + listener);
                     listener.deploy();
@@ -52,7 +52,7 @@ class DeploymentDispatcher extends DeploymentAdapter {
     public void doUndeploy() {
         boolean failed = false;
         while (!deployedListeners.isEmpty()) {
-            DeploymentListener listener = deployedListeners.pop();
+            Deployable listener = deployedListeners.pop();
             try {
                 listener.undeploy();
             } catch (RuntimeException e) {

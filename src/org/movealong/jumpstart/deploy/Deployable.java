@@ -8,7 +8,7 @@ import java.util.EventListener;
  * Date: Oct 8, 2010
  * Time: 1:47:34 AM
  */
-public interface DeploymentListener extends EventListener {
+public interface Deployable extends EventListener {
 
     enum Status {
         UNDEPLOYED,

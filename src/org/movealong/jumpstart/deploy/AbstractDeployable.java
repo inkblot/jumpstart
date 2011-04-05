@@ -6,7 +6,7 @@ package org.movealong.jumpstart.deploy;
  * Date: Oct 8, 2010
  * Time: 2:57:32 AM
  */
-public abstract class DeploymentAdapter implements DeploymentListener {
+public abstract class AbstractDeployable implements Deployable {
     private Status status = Status.UNDEPLOYED;
 
     @Override

@@ -26,15 +26,15 @@ import static org.junit.Assert.fail;
 public class DeploymentDispatcherTest {
 
     private Mockery mock;
-    private DeploymentDispatcher dispatcher;
-    private DeploymentListener neverUsed;
+    private JumpstartDispatcher dispatcher;
+    private Deployable neverUsed;
 
     @Before
     public void setUp() throws Exception {
         mock = new JUnit4Mockery();
-        neverUsed = mock.mock(DeploymentListener.class, "neverUsed");
+        neverUsed = mock.mock(Deployable.class, "neverUsed");
         mock.checking(new Expectations() {{
-            allowing(neverUsed).getStatus(); will(returnValue(DeploymentListener.Status.UNDEPLOYED));
+            allowing(neverUsed).getStatus(); will(returnValue(Deployable.Status.UNDEPLOYED));
         }});
     }
 
@@ -46,35 +46,35 @@ public class DeploymentDispatcherTest {
 
     @Test
     public void testEmptyListeners() {
-        dispatcher = new DeploymentDispatcher(Collections.<DeploymentListener>emptySet());
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, dispatcher.getStatus());
+        dispatcher = new JumpstartDispatcher(Collections.<Deployable>emptySet());
+        assertEquals(Deployable.Status.UNDEPLOYED, dispatcher.getStatus());
         dispatcher.deploy();
-        assertEquals(DeploymentListener.Status.DEPLOYED, dispatcher.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, dispatcher.getStatus());
         dispatcher.undeploy();
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, dispatcher.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, dispatcher.getStatus());
     }
 
     @Test
     public void testNormalListeners() {
-        DeploymentListener listener1 = new NormalListener();
-        DeploymentListener listener2 = new NormalListener();
-        dispatcher = new DeploymentDispatcher(new LinkedHashSet<DeploymentListener>(Arrays.asList(
+        Deployable listener1 = new NormalDeployable();
+        Deployable listener2 = new NormalDeployable();
+        dispatcher = new JumpstartDispatcher(new LinkedHashSet<Deployable>(Arrays.asList(
                 listener1,
                 listener2
         )));
         dispatcher.deploy();
-        assertEquals(DeploymentListener.Status.DEPLOYED, listener1.getStatus());
-        assertEquals(DeploymentListener.Status.DEPLOYED, listener2.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, listener1.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, listener2.getStatus());
         dispatcher.undeploy();
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, listener1.getStatus());
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, listener2.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, listener1.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, listener2.getStatus());
     }
 
     @Test
     public void testBrokenDeployment() {
-        NormalListener normal1 = new NormalListener();
-        BrokenDeployListener broken = new BrokenDeployListener();
-        dispatcher = new DeploymentDispatcher(new LinkedHashSet<DeploymentListener>(Arrays.asList(
+        NormalDeployable normal1 = new NormalDeployable();
+        BrokenDeployable broken = new BrokenDeployable();
+        dispatcher = new JumpstartDispatcher(new LinkedHashSet<Deployable>(Arrays.asList(
                 normal1,
                 broken,
                 neverUsed
@@ -85,43 +85,43 @@ public class DeploymentDispatcherTest {
         } catch (RuntimeException e) {
             // ok
         }
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, normal1.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, broken.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, dispatcher.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, normal1.getStatus());
+        assertEquals(Deployable.Status.ERROR, broken.getStatus());
+        assertEquals(Deployable.Status.ERROR, dispatcher.getStatus());
     }
 
     @Test
     public void testBrokenUndeployment() {
-        DeploymentListener normal1 = new NormalListener();
-        DeploymentListener broken = new BrokenUndeployListener();
-        DeploymentListener normal2 = new NormalListener();
-        dispatcher = new DeploymentDispatcher(new LinkedHashSet<DeploymentListener>(Arrays.asList(
+        Deployable normal1 = new NormalDeployable();
+        Deployable broken = new BrokenUndeployable();
+        Deployable normal2 = new NormalDeployable();
+        dispatcher = new JumpstartDispatcher(new LinkedHashSet<Deployable>(Arrays.asList(
                 normal1,
                 broken,
                 normal2
         )));
         dispatcher.deploy();
-        assertEquals(DeploymentListener.Status.DEPLOYED, normal1.getStatus());
-        assertEquals(DeploymentListener.Status.DEPLOYED, broken.getStatus());
-        assertEquals(DeploymentListener.Status.DEPLOYED, normal2.getStatus());
-        assertEquals(DeploymentListener.Status.DEPLOYED, dispatcher.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, normal1.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, broken.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, normal2.getStatus());
+        assertEquals(Deployable.Status.DEPLOYED, dispatcher.getStatus());
         try {
             dispatcher.undeploy();
             fail("Undeploy should have thrown an exception");
         } catch (RuntimeException e) {
             // ok
         }
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, normal1.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, broken.getStatus());
-        assertEquals(DeploymentListener.Status.UNDEPLOYED, normal2.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, dispatcher.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, normal1.getStatus());
+        assertEquals(Deployable.Status.ERROR, broken.getStatus());
+        assertEquals(Deployable.Status.UNDEPLOYED, normal2.getStatus());
+        assertEquals(Deployable.Status.ERROR, dispatcher.getStatus());
     }
 
     @Test
     public void testTotallyBroken() throws Exception {
-        DeploymentListener brokenUndeploy = new BrokenUndeployListener();
-        DeploymentListener brokenDeploy = new BrokenDeployListener();
-        dispatcher = new DeploymentDispatcher(new LinkedHashSet<DeploymentListener>(Arrays.asList(
+        Deployable brokenUndeploy = new BrokenUndeployable();
+        Deployable brokenDeploy = new BrokenDeployable();
+        dispatcher = new JumpstartDispatcher(new LinkedHashSet<Deployable>(Arrays.asList(
                 brokenUndeploy,
                 brokenDeploy,
                 neverUsed
@@ -132,12 +132,12 @@ public class DeploymentDispatcherTest {
         } catch (RuntimeException e) {
             // ok
         }
-        assertEquals(DeploymentListener.Status.ERROR, brokenUndeploy.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, brokenDeploy.getStatus());
-        assertEquals(DeploymentListener.Status.ERROR, dispatcher.getStatus());
+        assertEquals(Deployable.Status.ERROR, brokenUndeploy.getStatus());
+        assertEquals(Deployable.Status.ERROR, brokenDeploy.getStatus());
+        assertEquals(Deployable.Status.ERROR, dispatcher.getStatus());
     }
 
-    private static class NormalListener extends DeploymentAdapter {
+    private static class NormalDeployable extends AbstractDeployable {
         @Override
         protected void doDeploy() {
         }
@@ -147,7 +147,7 @@ public class DeploymentDispatcherTest {
         }
     }
 
-    private static class BrokenDeployListener extends DeploymentAdapter {
+    private static class BrokenDeployable extends AbstractDeployable {
         @Override
         protected void doDeploy() {
             throw new RuntimeException("I'm broken!");
@@ -158,7 +158,7 @@ public class DeploymentDispatcherTest {
         }
     }
 
-    private static class BrokenUndeployListener extends DeploymentAdapter {
+    private static class BrokenUndeployable extends AbstractDeployable {
         @Override
         protected void doDeploy() {
         }
