@@ -1,6 +1,3 @@
 <project name="jumpstart" default="build-common.dist">
-    <property name="use.test" value="Yes, do it!"/>
-    <property name="use.coverage" value="Yes, do it!"/>
-
     <import file="../build-common/build-common.xml"/>
 </project>
