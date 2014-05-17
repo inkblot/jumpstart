@@ -2,7 +2,7 @@
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="org.movealong" module="jumpstart" revision="1.0.2"/>
+    <info organisation="org.movealong" module="jumpstart" revision="2.0.0"/>
 
     <configurations>
         <conf name="default" extends="runtime" description="Distributed artifacts"/>
@@ -16,20 +16,21 @@
 
     <publications>
         <artifact name="jumpstart" type="jar" ext="jar" conf="default"/>
-        <artifact name="jumpstart-source" type="source" ext="jar" conf="sources"/>
-        <artifact name="jumpstart-src" ext="tar.gz" conf="build"/>
-        <artifact name="jumpstart-src" ext="zip" conf="build"/>
+        <artifact name="jumpstart" type="pom" ext="xml" conf="default"/>
+        <artifact name="jumpstart" type="source" ext="jar" conf="sources"/>
+        <artifact name="jumpstart" type="source" ext="tar.gz" conf="build"/>
+        <artifact name="jumpstart" type="source" ext="zip" conf="build"/>
     </publications>
 
     <dependencies>
-        <dependency org="com.google.inject" name="guice" rev="2.0" conf="runtime->default"/>
-        <dependency org="com.google.inject.extensions" name="guice-multibindings" rev="2.0" conf="runtime->default"/>
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.0" conf="runtime->default"/>
+        <dependency org="com.google.inject" name="guice" rev="3.0" conf="runtime->default"/>
+        <dependency org="com.google.inject.extensions" name="guice-multibindings" rev="3.0" conf="runtime->default"/>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->default"/>
 
         <dependency org="junit" name="junit" rev="4.8.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock" rev="2.5.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock-junit4" rev="2.5.1" conf="test->default"/>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.0" conf="test->default"/>
+        <dependency org="org.slf4j" name="slf4j-simple" rev="1.7.7" conf="test->default"/>
 
         <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="build->default"/>
     </dependencies>
